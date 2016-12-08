@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="org.ardulink:ardulink-core-serial-jssc:2.0.1" type="repository">
+    <properties maven-id="org.ardulink:ardulink-core-serial-jssc:2.0.1" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/ardulink-core-serial-jssc-2.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ardulink-core-base-2.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ardulink-core-util-2.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ardulink-core-beans-2.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-api-1.7.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-jdk14-1.7.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/validation-api-1.0.0.GA.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jssc-2.8.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

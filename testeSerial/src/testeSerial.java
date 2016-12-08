@@ -1,101 +1,64 @@
+import sun.rmi.runtime.Log;
+
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
-import gnu.io.SerialPortEvent;
-import gnu.io.SerialPortEventListener;
-import java.util.Enumeration;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.lang.Thread.sleep;
+import static javax.print.attribute.standard.PrinterStateReason.STOPPING;
 
-public class testeSerial implements SerialPortEventListener {
-    SerialPort serialPort;
-    /** The port we're normally going to use. */
-    private static final String PORT_NAMES[] = {"/dev/tty.usbserial-A9007UX1", // Mac OS X
-            "/dev/ttyACM0", // Linux
-            "COM35", // Windows
-    };
-    private BufferedReader input;
-    private OutputStream output;
-    private static final int TIME_OUT = 2000;
-    private static final int DATA_RATE = 9600;
+public class testeSerial {
+    AtomicInteger valor=new AtomicInteger(0);
+    public static void main(String[] args) throws InterruptedException {
+        testeSerial main= new testeSerial();
+        main.inicia();
+        main.iniciaTCP();
+    }
 
-    public void initialize() {
-        CommPortIdentifier portId = null;
-        Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
-        System.out.println(portEnum);
-        //First, Find an instance of serial port as set in PORT_NAMES.
-        while (portEnum.hasMoreElements()) {
-            //System.out.println("aaaaaaaaaaaaaaaaaaa");
-            CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
-            for (String portName : PORT_NAMES) {
-                if (currPortId.getName().equals(portName)) {
-                    portId = currPortId;
-                    break;
-                }
-            }
-        }
-
-        System.out.println(portId);
-        if (portId == null) {
-            System.out.println("Could not find COM port.");
-            System.exit(1);
-        }
-
+    private void iniciaTCP() {
+        System.out.println("server");
         try {
-            serialPort = (SerialPort) portId.open(this.getClass().getName(), TIME_OUT);
-            serialPort.setSerialPortParams(DATA_RATE,
-                    SerialPort.DATABITS_8,
-                    SerialPort.STOPBITS_1,
-                    SerialPort.PARITY_NONE);
-
-            // open the streams
-            input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-            output = serialPort.getOutputStream();
-
-            serialPort.addEventListener(this);
-            serialPort.notifyOnDataAvailable(true);
-        } catch (Exception e) {
-            System.err.println(e.toString());
-        }
-    }
-
-
-    public synchronized void close() {
-        if (serialPort != null) {
-            serialPort.removeEventListener();
-            serialPort.close();
-        }
-    }
-
-    public synchronized void serialEvent(SerialPortEvent oEvent) {
-        if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-            try {
-                String inputLine=null;
-                if (input.ready()) {
-                    inputLine = input.readLine();
-                    System.out.println(inputLine);
-                }
-
-            } catch (Exception e) {
-                System.err.println(e.toString());
+            Boolean end = false;
+            ServerSocket ss = new ServerSocket(12345);
+            while(!end){
+                //Server is waiting for client here, if needed
+                Socket s = ss.accept();
+                BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                PrintWriter output = new PrintWriter(s.getOutputStream(),true); //Autoflush
+                String st = input.readLine();
+                //Log.d("Tcp Example", "From client: "+st);
+                output.println("Good bye and thanks for all the fish :)");
+                s.close();
+                //if ( STOPPING conditions){ end = true; }
             }
+            ss.close();
+
+
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-// Ignore all the other eventTypes, but you should consider the other ones.
+
+
     }
 
-    public static void main(String[] args) throws Exception {
-        testeSerial main = new testeSerial();
-        //System.setProperty("gnu.io.rxtx.SerialPorts", "dev/ttyACM0");
-        main.initialize();
-        Thread t=new Thread() {
-            public void run() {
-                //the following line will keep this app alive for 1000    seconds,
-                //waiting for events to occur and responding to them    (printing incoming messages to console).
-                try {Thread.sleep(1000000);} catch (InterruptedException    ie) {}
-            }
-        };
-        t.start();
-        System.out.println("Started");
+    private void inicia() throws InterruptedException {
+        Thread ardReceve=new arduinoRecebe(valor);
+
+        ardReceve.start();
+
+
+
+
+
     }
+
 }
