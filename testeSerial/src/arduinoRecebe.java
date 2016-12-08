@@ -48,7 +48,7 @@ public class arduinoRecebe extends Thread implements Runnable {
                     }
                 }
                 //aux=Integer.parseInt(val);
-                System.out.println("thread "+guarda);
+                //System.out.println("thread "+guarda);
                 valor.set(guarda);
 
                 try {

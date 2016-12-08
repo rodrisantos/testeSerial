@@ -28,11 +28,12 @@ public class testeSerial {
             while(!end){
                 //Server is waiting for client here, if needed
                 Socket s = ss.accept();
-                BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                System.out.println("accept");
+                //BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
                 PrintWriter output = new PrintWriter(s.getOutputStream(),true); //Autoflush
-                String st = input.readLine();
+                //String st = input.readLine();
                 //Log.d("Tcp Example", "From client: "+st);
-                output.println("Good bye and thanks for all the fish :)");
+                output.println(valor.get());
                 s.close();
                 //if ( STOPPING conditions){ end = true; }
             }
