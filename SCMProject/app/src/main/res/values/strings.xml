@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SCMProject</string>
+    <string name="action_settings">Settings</string>
+    <string name="edit_message">Values from Sensors</string>
+    <string name="button_send">Send</string>
+    <string name="texto">Texto</string>
+</resources>
