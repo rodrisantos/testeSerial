@@ -3,6 +3,7 @@
  */
 
 
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,20 +23,30 @@ public class arduinoRecebe extends Thread implements Runnable {
     }
 
     public void run(){
-        SerialPort serialPort = new SerialPort("/dev/ttyACM0");
+         /*SerialPort serialPort = new SerialPort("/dev/ttyACM0");
         try {
             System.out.println("Port opened: " + serialPort.openPort());
 
-            try {
+           try {
                 sleep(3000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(testeSerial.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            }*/
 
-            serialPort.setParams(9600, 8, 1, 0);
+            //serialPort.setParams(9600, 8, 1, 0);
 
             while(true){
-                int guarda=0;
+                Random rand = new Random();
+                valor.set(rand.nextInt(1023));
+                //System.out.println(valor.get());
+                try {
+                    sleep(10000);
+                } catch (InterruptedException e) {
+                    System.err.println("erro no sleep");
+                }
+
+            }
+                /*int guarda=0;
                 int i=0;
                 val=serialPort.readString();
                 if(val!=null) {
@@ -51,19 +62,16 @@ public class arduinoRecebe extends Thread implements Runnable {
                 //System.out.println("thread "+guarda);
                 valor.set(guarda);
 
-                try {
-                    sleep(10000);
-                } catch (InterruptedException e) {
-                    System.err.println("erro no sleep");
-                }
+
             }
 
 
-            //System.out.println("Port closed: " + serialPort.closePort());
-        }
-        catch (SerialPortException ex){
+            //System.out.println("Port closed: " + serialPort.closePort());*/
+
+        //}
+        /*catch (SerialPortException ex){
             System.out.println(ex);
-        }
+        }*/
     }
 
     private int testa(char c) {

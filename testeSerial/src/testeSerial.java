@@ -21,6 +21,7 @@ public class testeSerial {
     }
 
     private void iniciaTCP() {
+        Thread tcpCliente;
         System.out.println("server");
         try {
             Boolean end = false;
@@ -30,15 +31,16 @@ public class testeSerial {
                 Socket s = ss.accept();
                 System.out.println("accept");
                 //BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                PrintWriter output = new PrintWriter(s.getOutputStream(),true); //Autoflush
+                tcpCliente = new TCPCliente(valor,s);
+                tcpCliente.start();
+                //PrintWriter output = new PrintWriter(s.getOutputStream(),true); //Autoflush
                 //String st = input.readLine();
                 //Log.d("Tcp Example", "From client: "+st);
-                output.println(valor.get());
-                s.close();
+                //output.println(valor.get());
+                //s.close();
                 //if ( STOPPING conditions){ end = true; }
             }
             ss.close();
-
 
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
@@ -48,17 +50,12 @@ public class testeSerial {
             e.printStackTrace();
         }
 
-
     }
 
     private void inicia() throws InterruptedException {
         Thread ardReceve=new arduinoRecebe(valor);
 
         ardReceve.start();
-
-
-
-
 
     }
 
