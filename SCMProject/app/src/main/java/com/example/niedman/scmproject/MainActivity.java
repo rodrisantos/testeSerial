@@ -22,7 +22,7 @@ import java.net.Socket;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class MainActivity extends AppCompatActivity {
-
+    public final static String EXTRA_MESSAGE = "com.example.niedman.scmproject.MESSAGE";
     TextView response;
     EditText editTextAddress, editTextPort;
     Button buttonConnect, buttonClear;
@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View arg0) {
-                Client myClient = new Client("194.210.172.252", 12345, response);
+                Client myClient = new Client("194.210.174.59", 12345, response);
                 myClient.execute();
-                changeView();
+                //changeView();
             }
         });
 
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void changeView(){
+    public void changeView(View view){
 
         Intent intent = new Intent(this,DisplayMessageActivity.class);
         String message = response.getText().toString();

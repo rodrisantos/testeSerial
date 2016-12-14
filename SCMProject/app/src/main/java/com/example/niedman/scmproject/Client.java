@@ -3,9 +3,11 @@ package com.example.niedman.scmproject;
 /**
  * Created by niedman on 12/8/16.
  */
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import android.os.AsyncTask;
@@ -32,19 +34,25 @@ public class Client extends AsyncTask<Void, Void, Void> {
         try {
             socket = new Socket(dstAddress, dstPort);
 
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(
-                    1024);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
             byte[] buffer = new byte[1024];
 
             int bytesRead;
             InputStream inputStream = socket.getInputStream();
-
+            //BufferedReader bread = new BufferedReader(new InputStreamReader(inputStream));
          /*
           * notice: inputStream.read() will block if no data return
           */
+            Void result=null;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
+                
+                byteArrayOutputStream.flush();
+                response = "";
+                //bytesRead = bread.readLine();
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
-                response += byteArrayOutputStream.toString("UTF-8");
+                response = byteArrayOutputStream.toString("UTF-8");
+                //response = bytesRead;
+                //onProgressUpdate(result);
             }
 
         } catch (UnknownHostException e) {
@@ -73,5 +81,6 @@ public class Client extends AsyncTask<Void, Void, Void> {
         textResponse.setText(response);
         super.onPostExecute(result);
     }
+
 
 }
