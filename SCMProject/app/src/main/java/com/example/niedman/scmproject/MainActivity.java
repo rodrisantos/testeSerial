@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View arg0) {
-                Client myClient = new Client("194.210.174.59", 12345, response);
+                Client myClient = new Client("194.210.174.222", 12345, response);
                 myClient.execute();
                 //changeView();
             }
