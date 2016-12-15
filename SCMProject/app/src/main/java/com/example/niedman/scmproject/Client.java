@@ -42,6 +42,7 @@ public class Client extends AsyncTask<Void, Integer, Void> {
 
     protected void onProgressUpdate(Integer... value){
         Log.e("cheguei aqui","");
+        MainActivity main=new MainActivity();
         textResponse.clearComposingText();
         textResponse.setText(value[0].toString());
         //super.onProgressUpdate();
