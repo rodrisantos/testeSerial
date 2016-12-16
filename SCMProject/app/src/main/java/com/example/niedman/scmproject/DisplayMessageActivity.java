@@ -8,11 +8,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import services.WeatherServiceCallback;
+import services.YahooWeatherService;
 
 import static android.R.color.holo_orange_light;
 import static android.graphics.Color.*;
@@ -22,7 +26,11 @@ public class DisplayMessageActivity extends AppCompatActivity {
     TextView response;
     Handler handler = new Handler();
     TextView textView;
+    ImageView weatherIconImageView;
+    TextView tempAPI;
+    TextView location;
     ViewGroup layout;
+    private YahooWeatherService service;
     AtomicInteger uvVal=new AtomicInteger(0);
     AtomicInteger tempVal=new AtomicInteger(0);
     String messageLow = "-Wear sunglasses on bright days.\n" +
@@ -51,17 +59,19 @@ public class DisplayMessageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         int color=WHITE;
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_display_message);
         int valor=-1;
         String message="";
         String aux[];
         //int color=0;
         Random rand= new Random();
-
         response = (TextView) findViewById(R.id.responseTextView);
+        weatherIconImageView = (ImageView) findViewById(R.id.weatherIconImageView);
+        tempAPI = (TextView) findViewById(R.id.tempAPI);
+        location = (TextView) findViewById(R.id.location);
+        //service= new YahooWeatherService(this);
 
-
+        //service.refreshWeather("Coimbra, PT");
 
         Client myClient = new Client("194.210.172.69", 12345, uvVal, tempVal);
         myClient.execute();
