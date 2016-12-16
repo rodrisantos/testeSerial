@@ -18,7 +18,7 @@ public class Client extends AsyncTask<Void, Integer, Void> {
 
     String dstAddress;
     int dstPort;
-    String response = "";
+    String response = "-1";
     TextView textResponse;
     int count=0;
 
@@ -35,16 +35,18 @@ public class Client extends AsyncTask<Void, Integer, Void> {
         return null;
     }
 
-    public void doProgress(int value){
-        publishProgress(value);
+    public void doProgress(int value, int value2){
+        publishProgress(value,value2);
     }
 
 
     protected void onProgressUpdate(Integer... value){
         Log.e("cheguei aqui","");
+        String texto="";
         MainActivity main=new MainActivity();
         textResponse.clearComposingText();
-        textResponse.setText(value[0].toString());
+        texto+=value[0].toString()+"\n"+value[1].toString();
+        textResponse.setText(texto);
         //super.onProgressUpdate();
     }
 
@@ -62,7 +64,7 @@ class Recebe{
     public static void doStuff(Client task, String dstAddress, int dstPort){
 
         Socket socket = null;
-        String response = "";
+        String response = "-1";
 
         try {
             socket = new Socket(dstAddress, dstPort);
@@ -83,11 +85,13 @@ class Recebe{
 
                 //bytesRead = bread.readLine();
                 response=bread.readLine();
+
                 //response = byteArrayOutputStream.toString("UTF-8");
                 int value=Integer.parseInt(response);
 
-                task.doProgress(value);
-                response="";
+                int value2=-1;
+                task.doProgress(value,value2);
+                response="-1";
 
                 //byteArrayOutputStream.flush();
                 //response = bytesRead;

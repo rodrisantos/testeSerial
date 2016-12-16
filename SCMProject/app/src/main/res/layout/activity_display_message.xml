@@ -10,11 +10,36 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.niedman.scmproject.DisplayMessageActivity">
 
+    <TextView
+        android:id="@+id/titulo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+    />
 
 
     <TextView
+        android:id="@+id/uv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+         />
+
+    <TextView
         android:id="@+id/responseTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:gravity="center"
+        android:layout_marginBottom="23dp"
+        android:layout_alignBottom="@+id/uv"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="37dp" />
+
+
+    <TextView
+        android:id="@+id/Temp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        />
 
 </RelativeLayout>

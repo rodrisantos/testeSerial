@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 import static java.lang.Thread.sleep;
@@ -30,7 +31,9 @@ public class MainActivity extends AppCompatActivity {
     EditText editTextAddress, editTextPort;
     Button buttonConnect, buttonClear;
     Handler handler = new Handler();
-    Intent intent ;
+    Intent intentaux ;
+
+   // ArrayList <Intent> lista;
 
 
     @Override
@@ -38,19 +41,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d("onCreat","------------onCreate");
+
+
         //editTextAddress = (EditText) findViewById(R.id.addressEditText);
         //editTextPort = (EditText) findViewById(R.id.portEditText);
         buttonConnect = (Button) findViewById(R.id.connectButton);
         buttonClear = (Button) findViewById(R.id.clearButton);
         response = (TextView) findViewById(R.id.responseTextView);
-        intent = new Intent(this,DisplayMessageActivity.class);
+
         buttonConnect.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
+
                 Client myClient = new Client("194.210.174.59", 12345, response);
                 myClient.execute();
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 changeView(response);
+
 
             }
         });
@@ -59,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                response.setText("");
+                response.setText("-1");
             }
         });
     }
@@ -72,10 +85,14 @@ public class MainActivity extends AppCompatActivity {
             Log.d("entrei","run");
             String message = response.getText().toString();
             Log.d("entrei",message);
-            intent.putExtra(EXTRA_MESSAGE, message);
+            intentaux.putExtra(EXTRA_MESSAGE, message);
             //response.setText(message);
+
             handler.postDelayed(this, 10000);
-            startActivity(intent);
+
+
+                startActivity(intentaux);
+
         }
 
     };
@@ -83,11 +100,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeView(View view){
 
+        Intent intent = new Intent(this,DisplayMessageActivity.class);
+        intentaux=intent;
+        handler.removeCallbacks(updateView);
         handler.post(updateView);
         String message = response.getText().toString();
         intent.putExtra(EXTRA_MESSAGE, message);
 
-        startActivity(intent);
+        startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        //finish();
     }
+
 }
 
