@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ public class Client extends AsyncTask<Void, Integer, Void> {
     int dstPort;
     String response = "-1";
     TextView textResponse;
+    AtomicInteger uv;
+    AtomicInteger temp;
     int count=0;
 
     Client(String addr, int port, TextView textResponse) {
@@ -28,9 +32,17 @@ public class Client extends AsyncTask<Void, Integer, Void> {
         this.textResponse = textResponse;
     }
 
+    public Client(String addr, int port, AtomicInteger uv, AtomicInteger temp) {
+        dstAddress = addr;
+        dstPort = port;
+        this.uv=uv;
+        this.temp=temp;
+
+    }
+
     @Override
     protected Void doInBackground(Void... arg0) {
-        Recebe.doStuff(this,dstAddress,dstPort);
+        Recebe.doStuff(this,dstAddress,dstPort,uv,temp);
 
         return null;
     }
@@ -61,7 +73,9 @@ public class Client extends AsyncTask<Void, Integer, Void> {
 
 class Recebe{
 
-    public static void doStuff(Client task, String dstAddress, int dstPort){
+
+    public static void doStuff(Client task, String dstAddress, int dstPort, AtomicInteger uv, AtomicInteger temp){
+
 
         Socket socket = null;
         String response = "-1";
@@ -90,7 +104,9 @@ class Recebe{
                 int value=Integer.parseInt(response);
 
                 int value2=-1;
-                task.doProgress(value,value2);
+                uv.set(value);
+                temp.set(value2);
+                //task.doProgress(value,value2);
                 response="-1";
 
                 //byteArrayOutputStream.flush();

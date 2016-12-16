@@ -55,14 +55,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
 
-                Client myClient = new Client("194.210.174.59", 12345, response);
-                myClient.execute();
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                changeView(response);
+
+                changeView();
 
 
             }
@@ -78,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private Runnable updateView = new Runnable(){
+    /*private Runnable updateView = new Runnable(){
 
         @Override
         public void run() {
@@ -96,16 +90,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
+*/
 
-
-    public void changeView(View view){
+    public void changeView(){
 
         Intent intent = new Intent(this,DisplayMessageActivity.class);
         intentaux=intent;
-        handler.removeCallbacks(updateView);
-        handler.post(updateView);
-        String message = response.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
+        //handler.removeCallbacks(updateView);
+        //handler.post(updateView);
+        //String message = response.getText().toString();
+        //intent.putExtra(EXTRA_MESSAGE, message);
 
         startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         //finish();
