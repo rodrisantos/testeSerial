@@ -79,6 +79,7 @@ class Recebe{
 
         Socket socket = null;
         String response = "-1";
+        String result[];
 
         try {
             socket = new Socket(dstAddress, dstPort);
@@ -92,26 +93,23 @@ class Recebe{
          /*
           * notice: inputStream.read() will block if no data return
           */
-            Void result=null;
+
             while (true) {
 
                 //byteArrayOutputStream.flush();
 
                 //bytesRead = bread.readLine();
                 response=bread.readLine();
+                Log.d("LIDO:",response);
+                result=response.split(" ");
 
                 //response = byteArrayOutputStream.toString("UTF-8");
-                int value=Integer.parseInt(response);
+                int value=Integer.parseInt(result[0]);
 
-                int value2=-1;
+                int value2=Integer.parseInt(result[1]);
                 uv.set(value);
                 temp.set(value2);
-                //task.doProgress(value,value2);
-                response="-1";
 
-                //byteArrayOutputStream.flush();
-                //response = bytesRead;
-                //onProgressUpdate(result);
             }
 
         } catch (UnknownHostException e) {

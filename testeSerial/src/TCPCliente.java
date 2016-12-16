@@ -9,10 +9,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class TCPCliente extends Thread implements Runnable {
     AtomicInteger valor;
+    AtomicInteger valor2;
     Socket socket;
 
-    public TCPCliente(AtomicInteger valor,Socket socket)  {
+    public TCPCliente(AtomicInteger valor, AtomicInteger valor2, Socket socket)  {
         this.valor=valor;
+        this.valor2=valor2;
         this.socket=socket;
     }
     public void run(){
@@ -20,10 +22,11 @@ public class TCPCliente extends Thread implements Runnable {
         while(true) {
             try {
                 DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-                dados=Integer.toString(valor.get());
+                dados=Integer.toString(valor.get())+" "+Integer.toString(valor2.get());
+
                 output.writeBytes(dados+"\n");
                 output.flush();
-                System.out.println("valor----------->"+valor.get());
+                System.out.println("valor----------->"+valor.get()+" "+valor2.get());
                 try {
                     sleep(10000);
                 } catch (InterruptedException e) {

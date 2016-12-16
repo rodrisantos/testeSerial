@@ -15,63 +15,79 @@ import static java.lang.Thread.sleep;
 
 
 public class arduinoRecebe extends Thread implements Runnable {
-    AtomicInteger valor;
+    AtomicInteger valorUv;
+    AtomicInteger valorTemp;
     int aux=0;
     String val="";
-    arduinoRecebe(AtomicInteger valor){
-        this.valor=valor;
+    SerialPort serialPort;
+    arduinoRecebe(AtomicInteger valor ,AtomicInteger valor2){
+        this.valorUv=valor;
+        this.valorTemp= valor2;
+        serialPort = new SerialPort("/dev/ttyACM0");
     }
 
     public void run(){
-         /*SerialPort serialPort = new SerialPort("/dev/ttyACM0");
+
+        String valores[]=new String[2];
+        valores[0]="";
+        valores[1]="";
+
         try {
             System.out.println("Port opened: " + serialPort.openPort());
 
-           try {
-                sleep(3000);
+            try {
+                sleep(500);
             } catch (InterruptedException ex) {
                 Logger.getLogger(testeSerial.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
+            }
 
-            //serialPort.setParams(9600, 8, 1, 0);
+            serialPort.setParams(9600, 8, 1, 0);
 
             while(true){
-                Random rand = new Random();
-                valor.set(rand.nextInt(1023));
-                //System.out.println(valor.get());
-                try {
-                    sleep(10000);
-                } catch (InterruptedException e) {
-                    System.err.println("erro no sleep");
-                }
-
-            }
-                /*int guarda=0;
+                int guarda=0;
+                int guarda2=0;
                 int i=0;
+
                 val=serialPort.readString();
+                System.out.println(val);
+
                 if(val!=null) {
-                    for (i = 0; i < val.length(); i++) {
-                        if (Character.getNumericValue(val.charAt(i)) >= 0 && Character.getNumericValue(val.charAt(i)) < 10) {
+                    valores=val.split("\n");
+                    System.out.println(valores.length);
+                    for (i = 0; i < valores[0].length(); i++) {
+                        if (Character.getNumericValue(valores[0].charAt(i)) >= 0 && Character.getNumericValue(valores[0].charAt(i)) < 10) {
                             //System.out.println(val.charAt(i));
-                            guarda *= 10;
-                            guarda += Character.getNumericValue(val.charAt(i));
+                            guarda*= 10;
+                            guarda+= Character.getNumericValue(valores[0].charAt(i));
+                        }
+                    }
+                    for (i = 0; i < valores[1].length(); i++) {
+                        if (Character.getNumericValue(valores[1].charAt(i)) >= 0 && Character.getNumericValue(valores[1].charAt(i)) < 10) {
+                            //System.out.println(val.charAt(i));
+                            guarda2*= 10;
+                            guarda2+= Character.getNumericValue(valores[1].charAt(i));
                         }
                     }
                 }
+                valorUv.set(guarda);
+                valorTemp.set(guarda2);
+                guarda=0;
+                try {
+                    sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 //aux=Integer.parseInt(val);
-                //System.out.println("thread "+guarda);
-                valor.set(guarda);
 
+
+                //System.out.println("thread "+valorUv.toString()+" "+valorTemp.toString());
 
             }
-
-
             //System.out.println("Port closed: " + serialPort.closePort());*/
-
-        //}
-        /*catch (SerialPortException ex){
+        }
+        catch (SerialPortException ex){
             System.out.println(ex);
-        }*/
+        }
     }
 
     private int testa(char c) {

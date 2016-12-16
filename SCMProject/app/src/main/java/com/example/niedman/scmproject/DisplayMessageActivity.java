@@ -1,7 +1,9 @@
 package com.example.niedman.scmproject;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,11 +12,14 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import data.Channel;
+import data.Item;
 import services.WeatherServiceCallback;
 import services.YahooWeatherService;
 
@@ -22,7 +27,7 @@ import static android.R.color.holo_orange_light;
 import static android.graphics.Color.*;
 import static java.lang.Thread.sleep;
 
-public class DisplayMessageActivity extends AppCompatActivity {
+public class DisplayMessageActivity extends AppCompatActivity implements WeatherServiceCallback {
     TextView response;
     Handler handler = new Handler();
     TextView textView;
@@ -30,7 +35,11 @@ public class DisplayMessageActivity extends AppCompatActivity {
     TextView tempAPI;
     TextView location;
     ViewGroup layout;
+    TextView condition;
     private YahooWeatherService service;
+    private ProgressDialog dialog;
+
+
     AtomicInteger uvVal=new AtomicInteger(0);
     AtomicInteger tempVal=new AtomicInteger(0);
     String messageLow = "-Wear sunglasses on bright days.\n" +
@@ -69,9 +78,12 @@ public class DisplayMessageActivity extends AppCompatActivity {
         weatherIconImageView = (ImageView) findViewById(R.id.weatherIconImageView);
         tempAPI = (TextView) findViewById(R.id.tempAPI);
         location = (TextView) findViewById(R.id.location);
-        //service= new YahooWeatherService(this);
-
-        //service.refreshWeather("Coimbra, PT");
+        condition = (TextView) findViewById(R.id.condition);
+        service= new YahooWeatherService(this);
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Loading...");
+        dialog.show();
+        service.refreshWeather("Lisbon, Portugal");
 
         Client myClient = new Client("194.210.172.69", 12345, uvVal, tempVal);
         myClient.execute();
@@ -93,37 +105,37 @@ public class DisplayMessageActivity extends AppCompatActivity {
 
 
         TextView titulo = (TextView) findViewById(R.id.titulo);
-        titulo.setTextSize(50);
+        titulo.setTextSize(40);
         titulo.setText("Smart UV");
         
         titulo.setTextColor(BLUE);
-        titulo.setX(150);
+        titulo.setX(0);
         titulo.setY(0);
 
         TextView uv = (TextView) findViewById(R.id.uv);
-        uv.setTextSize(38);
+        uv.setTextSize(24);
         uv.setText("Uv:");
         uv.setX(200);
         uv.setY(250);
 
         TextView temp = (TextView) findViewById(R.id.Temp);
-        temp.setTextSize(38);
+        temp.setTextSize(24);
         temp.setText("Temp:");
         temp.setX(0);
         temp.setY(300);
 
         TextView tituloAdvice = (TextView) findViewById(R.id.tituloAdvice);
-        tituloAdvice.setTextSize(38);
+        tituloAdvice.setTextSize(24);
         tituloAdvice.setTextColor(BLUE);
         tituloAdvice.setText("Advices");
-        tituloAdvice.setX(250);
-        tituloAdvice.setY(500);
+        tituloAdvice.setX(350);
+        tituloAdvice.setY(600);
 
         advices = (TextView) findViewById(R.id.advice);
         advices.setTextSize(18);
 
         advices.setX(0);
-        advices.setY(690);
+        advices.setY(720);
 
         layout = (ViewGroup) findViewById(R.id.activity_display_message);
         layout.addView(textView);
@@ -139,9 +151,11 @@ public class DisplayMessageActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-
+            int valor = 800;
             int color = 0;
-            String aux[];
+            int nivel=0;
+            String aux[] = new String[2];
+            String mensagemAux="";
             Log.d("entrei", "run");
             String message = uvVal.toString() + "\n" + tempVal.toString();
             if (message.equals(""))
@@ -149,15 +163,15 @@ public class DisplayMessageActivity extends AppCompatActivity {
             else {
                 aux = message.split("\n");
                 valor = Integer.parseInt(aux[0]);
-                //valor +=93;
             }
-            /*if(valor >1023){
-                valor =0;
-            }*/
-            Log.d("valor=", Integer.toString(valor));
-            textView.setText(message);
+            nivel=verificaNivel(valor);
+            mensagemAux=(Integer.toString(nivel)+"\n"+aux[1]);
+            Log.d("valor=", Integer.toString(nivel));
+
+            textView.setText(mensagemAux);
             textView.setTextSize(30);
-            textView.setText(message);
+            textView.setTextSize(30);
+            //textView.setText(message);
             textView.setX(500);
             textView.setY(320);
 //            layout.addView(textView);
@@ -196,6 +210,19 @@ public class DisplayMessageActivity extends AppCompatActivity {
             handler.postDelayed(this, 10000);
 
 
+
+
+
+        }
+
+        private int verificaNivel(int valor) {
+                int i=0;
+                while (valor>0) {
+                    valor -= 93;
+                    i++;
+                }
+                return i;
+
         }
 
     };
@@ -207,5 +234,26 @@ public class DisplayMessageActivity extends AppCompatActivity {
 
         startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         finish();
+    }
+
+    @Override
+    public void serviceSuccess(Channel channel) {
+        dialog.hide();
+        Item item = channel.getItem();
+        int resourceId = getResources().getIdentifier("mipmap/icon_"+channel.getItem().getCondition().getCode(),null,getPackageName());
+
+        @SuppressWarnings("deprecation")
+        Drawable weatherIconDrawable = getResources().getDrawable(resourceId);
+
+        weatherIconImageView.setImageDrawable(weatherIconDrawable);
+        location.setText(service.getLocation());
+        tempAPI.setText(item.getCondition().getTemperature()+ "\u00B0" + channel.getUnits().getTemperature());
+        condition.setText(item.getCondition().getDescription());
+    }
+
+    @Override
+    public void serviceFailed(Exception exception) {
+        dialog.hide();
+        Toast.makeText(this,exception.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

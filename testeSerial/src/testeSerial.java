@@ -14,6 +14,7 @@ import static javax.print.attribute.standard.PrinterStateReason.STOPPING;
 
 public class testeSerial {
     AtomicInteger valor=new AtomicInteger(0);
+    AtomicInteger valor2=new AtomicInteger(0);
     public static void main(String[] args) throws InterruptedException {
         testeSerial main= new testeSerial();
         main.inicia();
@@ -31,7 +32,7 @@ public class testeSerial {
                 Socket s = ss.accept();
                 System.out.println("accept");
                 //BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                tcpCliente = new TCPCliente(valor,s);
+                tcpCliente = new TCPCliente(valor,valor2,s);
                 tcpCliente.start();
                 //PrintWriter output = new PrintWriter(s.getOutputStream(),true); //Autoflush
                 //String st = input.readLine();
@@ -53,7 +54,7 @@ public class testeSerial {
     }
 
     private void inicia() throws InterruptedException {
-        Thread ardReceve=new arduinoRecebe(valor);
+        Thread ardReceve=new arduinoRecebe(valor,valor2);
 
         ardReceve.start();
 
